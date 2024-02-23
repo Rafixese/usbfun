@@ -1,0 +1,1 @@
+.\set_wallpaper.exe .\images\shrek.jpg
