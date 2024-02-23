@@ -1,6 +1,7 @@
 import ctypes
 import os
 import sys
+from pathlib import Path
 
 
 def set_wallpaper(image_path):
@@ -12,7 +13,10 @@ def set_wallpaper(image_path):
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        wallpaper_path = sys.argv[1]  # Get the wallpaper path from the first command line argument
+        script_path = os.getcwd()
+        wallpaper_rel_path = sys.argv[1]  # Get the wallpaper path from the first command line argument
+        wallpaper_path = str(Path(script_path, wallpaper_rel_path))
+        print("Setting wallpaper from", wallpaper_path)
 
         if os.path.isfile(wallpaper_path):
             set_wallpaper(wallpaper_path)

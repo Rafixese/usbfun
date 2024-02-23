@@ -1,1 +1,1 @@
-.\set_wallpaper.exe .\images\shrek.jpg
+.\set_wallpaper.exe images\shrek.jpg
