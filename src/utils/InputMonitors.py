@@ -1,29 +1,35 @@
+from abc import ABC
+
+from pynput.mouse import Button
 from usbmonitor import USBMonitor
 from typing import Callable, Union
 
-from pynput import keyboard
+from pynput import keyboard, mouse
 from pynput.keyboard import HotKey
 from pynput.keyboard._base import Listener, KeyCode, Key
 
 
-class SysMonitor:
-    def __init__(self):
-        self.hotkey_monitor: HotkeyMonitor = HotkeyMonitor()
-        self.usb_monitor: USBDeviceMonitor = USBDeviceMonitor()
+class BaseMonitor(ABC):
 
     def start(self):
-        self.usb_monitor.start()
-        self.hotkey_monitor.start()
+        raise NotImplementedError()
 
     def stop(self):
-        self.usb_monitor.stop()
-        self.hotkey_monitor.stop()
+        raise NotImplementedError()
 
     def join(self):
-        self.hotkey_monitor.join()
+        raise NotImplementedError()
 
 
-class USBDeviceMonitor:
+class MouseMonitor(BaseMonitor):
+    def __init__(self, on_move: Callable[[int, int], bool] | None = None,
+                 on_click: Callable[[int, int, Button, bool], bool] | None = None,
+                 on_scroll: Callable[[int, int, int, int], bool] | None = None,
+                 suppress: bool = False):
+        self.__listener = mouse.Listener(on_move=on_move, on_click=on_click, on_scroll=on_scroll, suppress=suppress)
+
+
+class USBDeviceMonitor(BaseMonitor):
     def __init__(self, on_connect: Callable | None = None, on_disconnect: Callable | None = None):
         self.usb_monitor: USBMonitor = USBMonitor()
         self.on_connect = on_connect
@@ -35,13 +41,17 @@ class USBDeviceMonitor:
     def stop(self):
         self.usb_monitor.stop_monitoring()
 
+    def join(self):
+        pass
 
-class HotkeyMonitor:
-    def __init__(self):
+
+class HotkeyMonitor(BaseMonitor):
+    def __init__(self, supress: bool = False):
         self.__hotkeys: list[HotKey] = []
         self.__listener: Listener = keyboard.Listener(
             on_press=self.__handle_press,
-            on_release=self.__handle_release
+            on_release=self.__handle_release,
+            supress=supress
         )
 
     def add_hotkey(self, shortcut: str, handler: Callable[[KeyCode], None]):
