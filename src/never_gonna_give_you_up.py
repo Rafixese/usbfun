@@ -3,9 +3,9 @@ from src.utils.InputMonitors import HotkeyMonitor, USBDeviceMonitor, MouseMonito
 
 class MonitorManager:
     def __init__(self):
-        self.hotkey_monitor: HotkeyMonitor = None
-        self.usb_monitor: USBDeviceMonitor = None
-        self.mouse_monitor: MouseMonitor = None
+        self.hotkey_monitor: HotkeyMonitor | None = None
+        self.usb_monitor: USBDeviceMonitor | None = None
+        self.mouse_monitor: MouseMonitor | None = None
 
     def __monitor_list(self):
         return [self.hotkey_monitor, self.usb_monitor, self.mouse_monitor]
