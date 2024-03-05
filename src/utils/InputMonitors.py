@@ -1,12 +1,35 @@
 from abc import ABC
-
-from pynput.mouse import Button
-from usbmonitor import USBMonitor
 from typing import Callable, Union
 
 from pynput import keyboard, mouse
 from pynput.keyboard import HotKey
 from pynput.keyboard._base import Listener, KeyCode, Key
+from pynput.mouse import Button
+from usbmonitor import USBMonitor
+
+
+class MonitorManager:
+    def __init__(self):
+        self.hotkey_monitor: HotkeyMonitor | None = None
+        self.usb_monitor: USBDeviceMonitor | None = None
+        self.mouse_monitor: MouseMonitor | None = None
+
+    def __monitor_list(self):
+        return [self.hotkey_monitor, self.usb_monitor, self.mouse_monitor]
+
+    def stop_all(self):
+        for monitor in self.__monitor_list():
+            try:
+                monitor.stop()
+            except Exception as e:
+                print(str(e))
+
+    def join_all(self):
+        for monitor in self.__monitor_list():
+            try:
+                monitor.join()
+            except Exception as e:
+                print(str(e))
 
 
 class BaseMonitor(ABC):
