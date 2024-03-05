@@ -1,4 +1,4 @@
-from src.utils.InputMonitors import HotkeyMonitor, USBDeviceMonitor, MouseMonitor, BaseMonitor
+from src.utils.InputMonitors import HotkeyMonitor, USBDeviceMonitor, MouseMonitor
 
 
 class MonitorManager:
