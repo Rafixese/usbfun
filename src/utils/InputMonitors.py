@@ -1,8 +1,39 @@
+from usbmonitor import USBMonitor
 from typing import Callable, Union
 
 from pynput import keyboard
 from pynput.keyboard import HotKey
 from pynput.keyboard._base import Listener, KeyCode, Key
+
+
+class SysMonitor:
+    def __init__(self):
+        self.hotkey_monitor: HotkeyMonitor = HotkeyMonitor()
+        self.usb_monitor: USBDeviceMonitor = USBDeviceMonitor()
+
+    def start(self):
+        self.usb_monitor.start()
+        self.hotkey_monitor.start()
+
+    def stop(self):
+        self.usb_monitor.stop()
+        self.hotkey_monitor.stop()
+
+    def join(self):
+        self.hotkey_monitor.join()
+
+
+class USBDeviceMonitor:
+    def __init__(self, on_connect: Callable | None = None, on_disconnect: Callable | None = None):
+        self.usb_monitor: USBMonitor = USBMonitor()
+        self.on_connect = on_connect
+        self.on_disconnect = on_disconnect
+
+    def start(self):
+        self.usb_monitor.start_monitoring(on_connect=self.on_connect, on_disconnect=self.on_disconnect)
+
+    def stop(self):
+        self.usb_monitor.stop_monitoring()
 
 
 class HotkeyMonitor:
